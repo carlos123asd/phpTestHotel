@@ -33,13 +33,18 @@
             GROUP BY
                 r.idRoom;";
 
-    $result = $mysql_connection -> query($query);
-    $data = $result -> fetch_assoc();
     echo "<ol>";
-        echo "<li>";
-            foreach($data as $key => $value){
-                echo "$key: $value <br>";
-            }
-        echo "</li>";
+        $result = $mysql_connection -> query($query);
+        while($data = $result -> fetch_assoc()){
+            echo "<li>";
+                foreach($data as $key => $value){
+                    echo "$key: $value <br>";
+                }
+            echo "</li> <br>";
+        }
     echo "</ol>";
+        
+    
+    //$result -> free();
+    $mysql_connection -> close();
 ?>
