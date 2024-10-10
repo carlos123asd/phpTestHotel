@@ -33,6 +33,7 @@
             GROUP BY
                 r.idRoom;";
 
+    echo "List Rooms";
     echo "<ol>";
         $result = $mysql_connection -> query($query);
         while($data = $result -> fetch_assoc()){
