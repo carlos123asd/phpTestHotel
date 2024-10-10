@@ -4,12 +4,8 @@
         una nueva habitación. Si accedes a la página con una peticion POST,
         mostrar la habitación nueva con el código de index4.php
     */
-    $sql_connection = new mysqli("localhost","root","123456789","hoteldb");
 
-    if($sql_connection -> connect_errno){
-        echo $sql_connection -> connect_errno;
-        exit();
-    }
+    define("JSON_LOCAL","./room.json");
 
     echo "<h2>New Room</h2>";
     echo "<form method='POST'>";
@@ -61,34 +57,62 @@
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-        $roomNumber = isset($_POST['roomNumber']) ? (int)htmlspecialchars($_POST['roomNumber']) : 0;
-        $typeRoom = isset($_POST['typeRoom']) ? htmlspecialchars($_POST['typeRoom']) : '';
-        $description = isset($_POST['description']) ? htmlspecialchars($_POST['description']) : '';
-        $offer = (isset($_POST['discount']) && (int)$_POST['discount'] > 0) ? 1 : 0;
-        $price = isset($_POST['price']) ? htmlspecialchars($_POST['price']) : '0';
-        $discount = isset($_POST['discount']) ? (int)htmlspecialchars($_POST['discount']) : 0;
-        $cancellation = isset($_POST['cancellation']) ? htmlspecialchars($_POST['cancellation']) : '';
-        $status = isset($_POST['status']) ? htmlspecialchars($_POST['status']) : '';
+        $roomNumber = isset($_POST['roomNumber']) ? (int)($_POST['roomNumber']) : 0;
+        $typeRoom = isset($_POST['typeRoom']) ? ($_POST['typeRoom']) : '';
+        $description = isset($_POST['description']) ? ($_POST['description']) : '';
+        $offer = (isset($_POST['discount']) && (int)$_POST['discount'] > 0) ? true : false;
+        $price = isset($_POST['price']) ? ($_POST['price']) : '0';
+        $discount = isset($_POST['discount']) ? (int)($_POST['discount']) : 0;
+        $cancellation = isset($_POST['cancellation']) ? ($_POST['cancellation']) : '';
+        $status = isset($_POST['status']) ? ($_POST['status']) : '';
 
-        $query = "INSERT INTO rooms(roomNumber,typeRoom,description,offer,price,discount,cancellation,status) values(
-            $roomNumber,
-            '$typeRoom',
-            '$description',
-            $offer,
-            '$price',
-            $discount,
-            '$cancellation',
-            '$status'
-            );";
+       
+        $file = file_get_contents(JSON_LOCAL);
+        $data = json_decode($file,true);
+         //Conseguimos los ids y los ordenamos para luego sumar y setear el nuevo id en el json
+        $ids = array();
+        foreach($data as $room){
+            array_push($ids,$room['id']);
+        }
+        rsort($ids);
 
+        $object = array(
+            "id" => $ids[0] + 1,
+            "roomNumber" => $roomNumber,
+            "photo" => array(
+                "https://images.unsplash.com/photo-1572177215152-32f247303126?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2Mjk0NzV8MHwxfHNlYXJjaHwxNnx8cm9vbSUyMGhvdGVsfGVufDB8fHx8MTcyMjU0NDk5MHww&ixlib=rb-4.0.3&q=80&w=1080",
+                "https://images.unsplash.com/photo-1568495248636-6432b97bd949?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2Mjk0NzV8MHwxfHNlYXJjaHw5fHxyb29tJTIwaG90ZWx8ZW58MHx8fHwxNzIyNTQ0OTkwfDA&ixlib=rb-4.0.3&q=80&w=1080",
+                "https://images.unsplash.com/photo-1596194815712-2975c42363a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2Mjk0NzV8MHwxfHNlYXJjaHw2MHx8cm9vbSUyMGhvdGVsfGVufDB8fHx8MTcyMjU0NTEyOHww&ixlib=rb-4.0.3&q=80&w=1080"
+            ),
+            "typeRoom" => $typeRoom,
+            "description" => $description,
+            "offer" => $offer,
+            "price" => $price,
+            "discount" => $discount,
+            "cancellation" => $cancellation,
+            "status" => $status,
+            "amenities" => array(
+                        "AC",
+                        "Shower",
+                        "Towel",
+                        "Bathup",
+                        "Coffee Set",
+                        "LED TV",
+                        "Wifi"
+                    )
+        );
+
+        array_push($data,$object);
+        $data = json_encode($data,JSON_PRETTY_PRINT);
+        
         try{
-            $sql_connection -> query($query);
+            file_put_contents(JSON_LOCAL,$data);
             echo "<h1>Room List, loading...</h1>";
             sleep(3);
-            header("location: index5.php");
+            header("location: index4.php");
             exit();
         }catch(Exception $e){
-            echo 'Error creating a new room: ' . $e -> getMessage();
+            echo 'Error creating a new room(JSON): ' . $e -> getMessage();
         }
     }
 ?>
