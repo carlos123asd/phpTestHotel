@@ -4,6 +4,16 @@
         una consulta para obtener las habitaciones y mostrarlas abajo utilizando el
         código de index3.php
     */
+    require 'setup.php';
+    require './fetchs/fetchRoomsFromDB.php';
+
+    var_dump(fetchRoomsFromDB());
+    echo "<br>";
+
+    echo $blade->run("rooms", ['data' => fetchRoomsFromDB()]);
+
+
+    /*
     $mysql_connection = new mysqli("localhost","root","123456789","hoteldb");
     if($mysql_connection -> connect_errno){
         echo "Failed Connection: " . $mysql_connection -> connect_errno;
@@ -44,8 +54,6 @@
             echo "</li> <br>";
         }
     echo "</ol>";
-        
-    
-    //$result -> free();
-    $mysql_connection -> close();
+
+    $mysql_connection -> close();*/
 ?>

@@ -5,6 +5,12 @@
         <li></li> utilizando un bucle de PHP. Mostrar las propiedades Name, Number,
         Price y Discount
     */
+    require 'setup.php';
+    require './fetchs/fetchRoomsFromJSON.php';
+    //print_r(fetchRoomsFromJSON());
+    echo $blade->run("rooms", ['data' => fetchRoomsFromJSON()]);
+
+    /*
     define("JSON_LOCAL","./room.json");
     $json = file_get_contents(JSON_LOCAL);
     $data = json_decode($json,true);
@@ -22,4 +28,6 @@
                 echo "<br>";
         }
     echo "</ol>";
+    */
 ?>
+

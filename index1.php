@@ -38,13 +38,4 @@ foreach ($rooms as $key => $value){
     }
 };
 echo '</pre>';
-//print_r -> Para ver el contenido del array de forma rapida y sencilla
-/*echo '<pre>';
-    print_r($rooms);
-echo'</pre>';*/
-
-//var_dump -> Para ver informacion mas precisas como el tipo y la longitud de los valores
-/*echo '<pre>';
-    var_dump($rooms);
-echo '</pre>';*/
 ?>
